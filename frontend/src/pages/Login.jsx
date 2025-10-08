@@ -28,7 +28,7 @@ const location = useLocation();
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://react-note-app-1.onrender.com/api/auth/login",
         formData
       );
       if (response.data) {
