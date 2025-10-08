@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import { UserAuth } from './context/ContextProvider';
+import Test from './components/Test';
 
 const App = () => {
   const { user } = UserAuth();
@@ -37,6 +38,14 @@ const App = () => {
         <Route
           path="/login"
           element={!user ? <Login /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/test"
+          element={<Test />}
+        />
+        <Route
+          path="/test2"
+          element={<Test />}
         />
         <Route
           path="/register"
