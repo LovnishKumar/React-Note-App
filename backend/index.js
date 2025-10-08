@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import authRouter from './routes/auth.js';
 import noteRouter from './routes/note.js';
 import { connectDB } from './db/db.js';
@@ -7,6 +6,15 @@ import dotenv from "dotenv";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from "cors";
+
+const allowedOrigins = [
+  "https://react-note-app-1.onrender.com", // your frontend Render URL
+  "http://localhost:5173", // local dev (Vite default)
+];
+
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +26,13 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Multer setup
 const storage = multer.memoryStorage();

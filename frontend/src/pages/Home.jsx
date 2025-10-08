@@ -67,7 +67,7 @@ const Home = () => {
   useEffect(() => {
     fetchNotes();
   }, []);
-
+  
   const addNote = async (title, description) => {
     try {
       const response = await axios.post(
