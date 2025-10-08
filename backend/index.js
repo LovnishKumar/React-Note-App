@@ -19,8 +19,8 @@ const PORT = process.env.PORT || 5000;
 
 // -------------------- CORS --------------------
 const allowedOrigins = [
-  "https://react-note-app-1.onrender.com", // frontend deployed
-  "http://localhost:5173", // local dev
+  "https://react-note-app-1.onrender.com", // deployed frontend
+  "http://localhost:5173", // local dev (Vite default)
 ];
 
 app.use(
@@ -34,7 +34,7 @@ app.use(
 // -------------------- Middleware --------------------
 app.use(express.json());
 
-// Multer setup for file uploads (if needed)
+// Multer setup for file uploads (optional)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -46,7 +46,8 @@ app.use("/api/note", noteRouter);
 const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
 
-// Catch-all for React Router routes (Express 5 safe)
+// -------------------- React Router Fallback --------------------
+// ✅ This handles all non-API routes (e.g., /login, /dashboard) on refresh
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) return next(); // skip API routes
   res.sendFile(path.join(frontendPath, "index.html"));
