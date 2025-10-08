@@ -8,7 +8,6 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// __dirname setup for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -29,15 +28,17 @@ const upload = multer({ storage });
 app.use('/api/auth', authRouter);
 app.use('/api/note', noteRouter);
 
-// Serve React frontend (build folder)
-app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+// ✅ Serve React frontend (Vite build)
+const frontendPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(frontendPath));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+// ✅ Wildcard for React Router (Express 5 fix)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-// Connect DB and start server
-app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server running on port ${PORT}`);
+// Connect DB & start server
+app.listen(PORT, async () => {
+  await connectDB();
+  console.log(`✅ Server running on port ${PORT}`);
 });
