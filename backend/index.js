@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import multer from 'multer';
 
 
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 dotenv.config();
@@ -15,7 +16,11 @@ const PORT = process.env.PORT || 5000
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "*", 
+}));
+
+
 app.use('/api/auth', authRouter);
 app.use('/api/note', noteRouter);
 
