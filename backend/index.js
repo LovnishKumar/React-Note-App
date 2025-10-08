@@ -3,57 +3,45 @@ import authRouter from "./routes/auth.js";
 import noteRouter from "./routes/note.js";
 import { connectDB } from "./db/db.js";
 import dotenv from "dotenv";
-import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 
-// -------------------- Setup --------------------
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// -------------------- CORS --------------------
+// CORS
 const allowedOrigins = [
-  "https://react-note-app-1.onrender.com", // deployed frontend
-  "http://localhost:5173", // local dev (Vite default)
+  "https://react-note-app-1.onrender.com",
+  "http://localhost:5173",
 ];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
-// -------------------- Middleware --------------------
 app.use(express.json());
 
-// Multer setup for file uploads (optional)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// -------------------- API Routes --------------------
+// API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/note", noteRouter);
 
-// -------------------- Serve React SPA --------------------
+// Serve static frontend
 const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
 
-// -------------------- React Router Fallback --------------------
-// ✅ This handles all non-API routes (e.g., /login, /dashboard) on refresh
+// Express 5-safe React Router fallback
 app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) return next(); // skip API routes
-  res.sendFile(path.join(frontendPath, "index.html"));
+  // Skip API routes
+  if (req.path.startsWith("/api")) return next();
+  // Only serve index.html if the file exists in dist
+  res.sendFile(path.join(frontendPath, "index.html"), err => {
+    if (err) next(err);
+  });
 });
 
-// -------------------- Start Server --------------------
+// Start server
 app.listen(PORT, async () => {
   await connectDB();
   console.log(`✅ Server running on port ${PORT}`);
