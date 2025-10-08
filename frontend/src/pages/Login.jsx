@@ -24,11 +24,14 @@ const location = useLocation();
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
 
+  const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
+  const LOCAL_URL = import.meta.env.VITE_LOCAL_URI;
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://react-note-app-1.onrender.com/api/auth/login",
+        `${API_URL || LOCAL_URL || "http://localhost:5000"}/api/auth/login`,
         formData
       );
       if (response.data) {

@@ -13,6 +13,9 @@ const Signup = () => {
   const navigate = useNavigate();
   const {setUser} = UserAuth()
 
+  const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
+  const LOCAL_URL = import.meta.env.VITE_LOCAL_URI;
+
   function handleChange(event) {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
@@ -21,7 +24,7 @@ const Signup = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL || LOCAL_URL || "http://localhost:5000"}/api/auth/register`,
         formData
       );
       if (response.data) {
